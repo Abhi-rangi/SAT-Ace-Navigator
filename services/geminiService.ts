@@ -9,6 +9,12 @@ export interface LocalTutorResponse {
   groundingChunks: any[];
 }
 
+export interface TutorFilters {
+  rating: string;
+  price: string;
+  availability: string;
+}
+
 export const fetchTopSATCourses = async (criteria: SearchCriteria): Promise<Course[]> => {
   const schema: Schema = {
     type: Type.ARRAY,
@@ -114,12 +120,19 @@ export const fetchAdmissionInsight = async (): Promise<string> => {
     }
 };
 
-export const fetchLocalTutors = async (location: string): Promise<LocalTutorResponse> => {
+export const fetchLocalTutors = async (location: string, subject: string, filters?: TutorFilters): Promise<LocalTutorResponse> => {
   try {
+    let filterText = "";
+    if (filters) {
+        if (filters.rating) filterText += ` with a rating of ${filters.rating} or higher`;
+        if (filters.price) filterText += ` in the ${filters.price} price range`;
+        if (filters.availability) filterText += ` available on ${filters.availability}`;
+    }
+
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `Find highly-rated SAT tutors and test prep centers in or near ${location}. 
-      Prioritize those with good reviews mentioning score improvements. 
+      contents: `Find highly-rated tutors and learning centers for students (Grade 8 through High School) specializing in '${subject}' in or near ${location}${filterText}. 
+      Prioritize those with good reviews mentioning improvement in this specific subject.
       Provide a summary of the top 3-5 options.`,
       config: {
         tools: [{ googleMaps: {} }],
