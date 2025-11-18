@@ -42,6 +42,7 @@ export interface Course {
   primaryCategory: CourseCategory;
   testimonials: Testimonial[];
   acceptanceStats: AcceptanceStats;
+  link: string;
 }
 
 export interface SearchCriteria {

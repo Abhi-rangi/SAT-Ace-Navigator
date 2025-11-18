@@ -4,6 +4,11 @@ import { Course, CourseFormat, SearchCriteria, CourseCategory } from "../types";
 const apiKey = process.env.API_KEY;
 const ai = new GoogleGenAI({ apiKey: apiKey });
 
+export interface LocalTutorResponse {
+  text: string;
+  groundingChunks: any[];
+}
+
 export const fetchTopSATCourses = async (criteria: SearchCriteria): Promise<Course[]> => {
   const schema: Schema = {
     type: Type.ARRAY,
@@ -26,6 +31,7 @@ export const fetchTopSATCourses = async (criteria: SearchCriteria): Promise<Cour
         cons: { type: Type.ARRAY, items: { type: Type.STRING } },
         averageScoreIncrease: { type: Type.NUMBER },
         primaryCategory: { type: Type.STRING, enum: Object.values(CourseCategory) },
+        link: { type: Type.STRING, description: "Official website URL for the course provider" },
         testimonials: {
           type: Type.ARRAY,
           items: {
@@ -53,7 +59,7 @@ export const fetchTopSATCourses = async (criteria: SearchCriteria): Promise<Cour
       required: [
         "id", "name", "provider", "price", "priceDisplay", "format", 
         "scoreGuarantee", "acceptanceImpact", "pros", "cons", 
-        "averageScoreIncrease", "primaryCategory", "testimonials", "acceptanceStats"
+        "averageScoreIncrease", "primaryCategory", "testimonials", "acceptanceStats", "link"
       ]
     }
   };
@@ -106,4 +112,26 @@ export const fetchAdmissionInsight = async (): Promise<string> => {
     } catch (e) {
         return "High SAT scores remain a critical differentiator for top-tier university admissions.";
     }
-}
+};
+
+export const fetchLocalTutors = async (location: string): Promise<LocalTutorResponse> => {
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `Find highly-rated SAT tutors and test prep centers in or near ${location}. 
+      Prioritize those with good reviews mentioning score improvements. 
+      Provide a summary of the top 3-5 options.`,
+      config: {
+        tools: [{ googleMaps: {} }],
+      },
+    });
+
+    return {
+      text: response.text || "No information found.",
+      groundingChunks: response.candidates?.[0]?.groundingMetadata?.groundingChunks || []
+    };
+  } catch (error) {
+    console.error("Error fetching local tutors:", error);
+    throw error;
+  }
+};

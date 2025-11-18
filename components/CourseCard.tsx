@@ -1,6 +1,6 @@
 import React from 'react';
 import { Course } from '../types';
-import { CheckCircle, TrendingUp, Award, Star, Quote, Building2 } from 'lucide-react';
+import { CheckCircle, TrendingUp, Award, Star, Quote, Building2, ExternalLink } from 'lucide-react';
 
 interface CourseCardProps {
   course: Course;
@@ -83,9 +83,15 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
           <Award size={14} className="text-gray-400" />
           <span>{course.scoreGuarantee}</span>
         </div>
-        <button className="px-4 py-2 bg-gray-900 hover:bg-indigo-600 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+        <a 
+          href={course.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-indigo-600 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
+        >
           View Course
-        </button>
+          <ExternalLink size={14} />
+        </a>
       </div>
     </div>
   );

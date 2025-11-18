@@ -4,6 +4,7 @@ import { fetchTopSATCourses, fetchAdmissionInsight } from './services/geminiServ
 import { CourseCard } from './components/CourseCard';
 import { StatsChart } from './components/StatsChart';
 import { FilterBar } from './components/FilterBar';
+import { LocalTutorFinder } from './components/LocalTutorFinder';
 import { GraduationCap, Sparkles, BookOpen, AlertCircle } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -79,7 +80,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10 space-y-10">
         <FilterBar 
           criteria={criteria} 
           setCriteria={setCriteria} 
@@ -95,13 +96,13 @@ const App: React.FC = () => {
         )}
 
         {courses.length > 0 && !loading && (
-          <div className="mb-12 animate-fade-in">
+          <div className="animate-fade-in">
             <StatsChart data={courses} />
           </div>
         )}
 
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
+        <section>
+          <div className="flex items-center justify-between mb-6">
              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
                 <span className="bg-indigo-600 w-2 h-8 rounded-full"></span>
                 Top 5: {criteria.category}
@@ -149,7 +150,11 @@ const App: React.FC = () => {
                 </p>
             </div>
           )}
-        </div>
+        </section>
+
+        <section className="pb-8">
+            <LocalTutorFinder />
+        </section>
       </main>
     </div>
   );
