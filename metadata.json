@@ -1,5 +1,7 @@
 {
   "name": "SAT Ace Navigator",
-  "description": "An AI-powered dashboard helping students find the best SAT preparation courses to boost college acceptance chances, featuring comparative analytics and personalized recommendations.",
-  "requestFramePermissions": []
+  "description": "An AI-powered dashboard helping students find the best SAT preparation courses and local tutors, featuring practice materials tailored to state syllabi.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
 }
